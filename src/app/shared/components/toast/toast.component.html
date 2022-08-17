@@ -1,0 +1,35 @@
+<div aria-live="polite" aria-atomic="true" class="position-relative">
+  <div class="toast-container position-absolute top-0 end-0 p-3">
+    <ngb-toast
+      *ngFor="let toast of toasts$ | async"
+      [autohide]="true"
+      [delay]="toast.delay || 5000"
+      (hidden)="removeToast(toast)"
+      [animation]="true"
+      [ngClass]="{
+        'bg-danger': toast.type === ERROR,
+        'bg-success': toast.type === SUCCESS,
+        'bg-light': toast.type === DEFAULT,
+        'bg-warning': toast.type === WARNING,
+        'text-dark': toast.type === DEFAULT || toast.type === WARNING,
+        'text-light': toast.type === ERROR || toast.type === SUCCESS
+      }"
+    >
+      <ng-template ngbToastHeader>
+        <div class="me-auto d-flex align-items-center">
+          <i
+            class="bi"
+            [ngClass]="{
+              'bi-x-lg': toast.type === ERROR,
+              'bi-check-lg': toast.type === SUCCESS,
+              'bi-info-circle-fill': toast.type === DEFAULT,
+              'bi-exclamation-triangle-fill': toast.type === WARNING
+            }"
+          ></i>
+          <strong class="mx-1">{{ getHeader(toast.type) | uppercase }}</strong>
+        </div>
+      </ng-template>
+      {{ toast.body }}
+    </ngb-toast>
+  </div>
+</div>

@@ -1,1 +1,28 @@
+@import url("https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
 /* You can add global styles to this file, and also import other style files */
+$primary: #4c3e5f;
+@import "../node_modules/bootstrap/scss/bootstrap";
+@import "../node_modules/bootstrap-icons/font/bootstrap-icons";
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  font-family: "Nunito", sans-serif;
+}
+
+@include media-breakpoint-up(md) {
+  .logo {
+    width: 50%;
+  }
+}
+
+.bi {
+  font-size: 24px;
+}
+
+button,
+label {
+  text-transform: uppercase;
+}
