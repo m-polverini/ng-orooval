@@ -1,15 +1,10 @@
 import { environment } from './../../../environments/environment';
-import {
-  HttpClient,
-  HttpErrorResponse,
-  HttpHeaders,
-} from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { UserLogin } from '../models/user-login';
-import { catchError, Observable, of, switchMap, throwError } from 'rxjs';
+import { catchError, Observable, throwError } from 'rxjs';
 import { ToastService } from './toast.service';
 import { ToastType } from '../models/toast-type.enum';
-import { Response } from '../models/response';
 
 @Injectable({
   providedIn: 'root',
