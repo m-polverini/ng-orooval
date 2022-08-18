@@ -2,11 +2,12 @@ import { environment } from './../../../environments/environment';
 import {
   HttpClient,
   HttpErrorResponse,
+  HttpHeaders,
   HttpResponse,
 } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { UserLogin } from '../models/user-login';
-import { catchError, map, Observable, throwError } from 'rxjs';
+import { catchError, map, Observable, of, switchMap, throwError } from 'rxjs';
 import { ToastService } from './toast.service';
 import { ToastType } from '../models/toast-type.enum';
 import { CookieService } from 'ngx-cookie-service';
@@ -29,23 +30,18 @@ export class AuthService {
 
   login(user: UserLogin): Observable<User> {
     return this._http
-      .post<Response>(`${this.apiUrl}${this.service}/login`, user)
+      .post<Response>(`${this.apiUrl}${this.service}/login`, user, {})
       .pipe(
         map((response: Response) => {
           console.log(this._cookieService.getAll());
-          console.log(response.response.access_token);
-          return response.response.user;
+          return response.response;
         }),
         catchError((error: HttpErrorResponse) => this.handleError(error))
       );
   }
 
   refresh(): Observable<any> {
-    return this._http.post<any>(
-      `${this.apiUrl}${this.service}/refresh`,
-      {},
-      { withCredentials: true }
-    );
+    return this._http.post<any>(`${this.apiUrl}${this.service}/refresh`, {});
   }
 
   private handleError(error: HttpErrorResponse) {

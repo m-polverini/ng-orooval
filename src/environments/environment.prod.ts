@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  api: 'https://orooval.herokuapp.com',
+  api: 'http://api.orooval.com',
 };

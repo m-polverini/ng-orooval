@@ -42,13 +42,10 @@ export class LoginComponent implements OnInit {
 
   login() {
     const user: UserLogin = this.loginForm.value;
-    this._authService
-      .login(user)
-      .pipe(switchMap((result) => this._authService.refresh()))
-      .subscribe((result) => {
-        console.log(this._cookieService.getAll());
-        console.log(result);
-      });
+    this._authService.login(user).subscribe((result) => {
+      console.log(this._cookieService.getAll());
+      console.log(result);
+    });
   }
 
   get email(): AbstractControl<any, any> | null {
