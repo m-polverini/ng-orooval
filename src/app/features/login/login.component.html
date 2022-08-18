@@ -1,9 +1,9 @@
-<div class="container-fluid h-100 bg-login">
+<div class="container-fluid h-100">
   <div class="row h-100">
     <div class="col d-flex align-items-center justify-content-center">
       <div class="position-absolute top-0 start-0 m-2">
         <button
-          class="btn btn-light rounded-circle d-flex align-items-center justify-content-center"
+          class="btn btn-secondary rounded-circle d-flex align-items-center justify-content-center"
           routerLink=""
         >
           <i class="bi bi-arrow-left"></i>
@@ -16,9 +16,7 @@
           alt="..."
         />
         <div class="card-text">
-          <p class="fw-semibold text-center h2 mb-3 text-light">
-            ACCEDI ALLA TUA UTENZA
-          </p>
+          <p class="fw-semibold text-center h2 mb-3">ACCEDI ALLA TUA UTENZA</p>
           <form [formGroup]="loginForm" (submit)="login()">
             <div class="form-floating mb-3">
               <input
@@ -77,7 +75,7 @@
             </div>
 
             <div class="mb-3 d-flex justify-content-center">
-              <a routerLink="/forgot-password" class="text-light"
+              <a routerLink="/forgot-password" class="text-secondary"
                 >Password dimenticata?</a
               >
             </div>
@@ -91,7 +89,7 @@
               </button>
             </div>
             <div class="mb-3 d-flex justify-content-center">
-              <a routerLink="/sign-up" class="text-light"
+              <a routerLink="/sign-up" class="text-secondary"
                 >Non sei ancora registrato? Fallo ora!</a
               >
             </div>

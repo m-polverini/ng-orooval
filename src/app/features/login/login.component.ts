@@ -6,6 +6,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { CookieService } from 'ngx-cookie-service';
+import { switchMap } from 'rxjs';
 import { AuthService } from 'src/app/shared/services/auth.service';
 import { UserLogin } from '../../shared/models/user-login';
 
@@ -24,8 +25,11 @@ export class LoginComponent implements OnInit {
     private _cookieService: CookieService
   ) {
     this.loginForm = this._fb.group({
-      email: this._fb.control(null, [Validators.email, Validators.required]),
-      password: this._fb.control(null, [Validators.required]),
+      email: this._fb.control('prova2113433@me.it', [
+        Validators.email,
+        Validators.required,
+      ]),
+      password: this._fb.control('password', [Validators.required]),
     });
     this.showPassword = false;
   }
@@ -38,10 +42,13 @@ export class LoginComponent implements OnInit {
 
   login() {
     const user: UserLogin = this.loginForm.value;
-    this._authService.login(user).subscribe((result) => {
-      console.log(result);
-      console.log(this._cookieService.getAll());
-    });
+    this._authService
+      .login(user)
+      .pipe(switchMap((result) => this._authService.refresh()))
+      .subscribe((result) => {
+        console.log(this._cookieService.getAll());
+        console.log(result);
+      });
   }
 
   get email(): AbstractControl<any, any> | null {
