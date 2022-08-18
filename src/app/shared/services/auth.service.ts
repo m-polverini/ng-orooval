@@ -25,18 +25,6 @@ export class AuthService {
     return this._http
       .post(`${this.apiUrl}${this.service}/login`, user, {})
       .pipe(
-        // switchMap((result) => {
-        //   const auth = result.headers.get('authorization');
-        //   if (auth) {
-        //     let headers = new HttpHeaders({ Authorization: auth });
-        //     const res = <Response>result.body;
-
-        //     return this._http.get(`${this.apiUrl}/user/${res.response.id}`, {
-        //       headers: headers,
-        //     });
-        //   }
-        //   return of(null);
-        // }),
         catchError((error: HttpErrorResponse) => {
           this._toastService.show(error.error.error, ToastType.ERROR);
           return throwError(() => error);
