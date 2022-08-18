@@ -41,7 +41,11 @@ export class AuthService {
   }
 
   refresh(): Observable<any> {
-    return this._http.post<any>(`${this.apiUrl}${this.service}/refresh`, {});
+    return this._http.post<any>(
+      `${this.apiUrl}${this.service}/refresh`,
+      {},
+      { withCredentials: true }
+    );
   }
 
   private handleError(error: HttpErrorResponse) {
