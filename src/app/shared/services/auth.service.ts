@@ -30,7 +30,9 @@ export class AuthService {
 
   login(user: UserLogin): Observable<any> {
     return this._http
-      .post<Response>(`${this.apiUrl}${this.service}/login`, user, {})
+      .post<Response>(`${this.apiUrl}${this.service}/login`, user, {
+        withCredentials: true,
+      })
       .pipe(
         map((response: Response) => {
           console.log(this._cookieService.getAll());
