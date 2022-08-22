@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
+import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { ToastInfo, ToastType } from '../../models';
 import { ToastService } from '../../services';
+import { getToasts, removeToast } from '../../store/toast';
 
 @Component({
   selector: 'toast',
@@ -16,12 +18,12 @@ export class ToastComponent implements OnInit {
 
   toasts$: Observable<ToastInfo[]>;
 
-  constructor(private _toastService: ToastService) {
-    this.toasts$ = this._toastService.$toasts;
+  constructor(private store: Store) {
+    this.toasts$ = this.store.select(getToasts);
   }
 
   removeToast(toast: ToastInfo) {
-    this._toastService.remove(toast);
+    this.store.dispatch(removeToast({ info: toast }));
   }
 
   getHeader(type?: ToastType) {

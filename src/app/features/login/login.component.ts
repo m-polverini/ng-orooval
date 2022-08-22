@@ -5,8 +5,9 @@ import {
   FormGroup,
   Validators,
 } from '@angular/forms';
+import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
-import { AuthService, UserLogin } from 'src/app/shared';
+import { login, User, UserLogin } from 'src/app/shared';
 
 @Component({
   selector: 'app-login',
@@ -19,7 +20,7 @@ export class LoginComponent implements OnInit, OnDestroy {
 
   loginSub?: Subscription;
 
-  constructor(private _fb: FormBuilder, private _authService: AuthService) {
+  constructor(private _fb: FormBuilder, private store: Store<{ user: User }>) {
     this.loginForm = this._fb.group({
       email: this._fb.control('prova2113433@me.it', [
         Validators.email,
@@ -42,9 +43,7 @@ export class LoginComponent implements OnInit, OnDestroy {
 
   login() {
     const user: UserLogin = this.loginForm.value;
-    this.loginSub = this._authService.login(user).subscribe((result) => {
-      console.log(result);
-    });
+    this.store.dispatch(login({ credentials: user }));
   }
 
   get email(): AbstractControl<any, any> | null {

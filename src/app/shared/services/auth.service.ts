@@ -1,9 +1,10 @@
-import { environment } from './../../../environments/environment';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { catchError, map, Observable, throwError } from 'rxjs';
-import { ToastService } from './toast.service';
+import { environment } from 'src/environments/environment';
 import { Response, ToastType, User, UserLogin } from '../models';
+import { Auth } from '../models/auth';
+import { ToastService } from './toast.service';
 
 @Injectable({
   providedIn: 'root',
@@ -17,7 +18,7 @@ export class AuthService {
     this.apiUrl = environment.api;
   }
 
-  login(user: UserLogin): Observable<User> {
+  login(user: UserLogin): Observable<Auth> {
     return this._http
       .post<Response>(`${this.apiUrl}${this.service}/login`, user, {
         withCredentials: true,
@@ -25,11 +26,10 @@ export class AuthService {
       })
       .pipe(
         map((response) => {
-          this.saveAccessTokenAndUser(
-            response.headers.get(this.AUTHORIZATION),
-            response.body?.response
-          );
-          return response.body?.response;
+          return {
+            user: response.body?.response,
+            accessToken: response.headers.get(this.AUTHORIZATION),
+          };
         }),
         catchError((error: HttpErrorResponse) => this.handleError(error))
       );
@@ -79,8 +79,6 @@ export class AuthService {
   }
 
   private handleError(error: HttpErrorResponse) {
-    this._toastService.show(error.error.error, ToastType.ERROR);
-    this.removeAccessToken();
     return throwError(() => error);
   }
 }
