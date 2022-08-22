@@ -28,7 +28,7 @@ export class AuthService {
     this.apiUrl = environment.api;
   }
 
-  login(user: UserLogin): Observable<User> {
+  login(user: UserLogin): Observable<any> {
     return this._http
       .post<Response>(`${this.apiUrl}${this.service}/login`, user, {})
       .pipe(
@@ -36,6 +36,9 @@ export class AuthService {
           console.log(this._cookieService.getAll());
           return response.response;
         }),
+        switchMap((result) =>
+          this._http.post(`${this.apiUrl}${this.service}/refresh`, {})
+        ),
         catchError((error: HttpErrorResponse) => this.handleError(error))
       );
   }
