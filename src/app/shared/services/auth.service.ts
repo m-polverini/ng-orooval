@@ -39,7 +39,13 @@ export class AuthService {
           return response.response;
         }),
         switchMap((result) =>
-          this._http.post(`${this.apiUrl}${this.service}/refresh`, {})
+          this._http.post(
+            `${this.apiUrl}${this.service}/refresh`,
+            {},
+            {
+              withCredentials: true,
+            }
+          )
         ),
         catchError((error: HttpErrorResponse) => this.handleError(error))
       );
