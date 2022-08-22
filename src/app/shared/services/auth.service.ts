@@ -1,18 +1,9 @@
 import { environment } from './../../../environments/environment';
-import {
-  HttpClient,
-  HttpErrorResponse,
-  HttpHeaders,
-  HttpResponse,
-} from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { UserLogin } from '../models/user-login';
-import { catchError, map, Observable, of, switchMap, throwError } from 'rxjs';
+import { catchError, map, Observable, throwError } from 'rxjs';
 import { ToastService } from './toast.service';
-import { ToastType } from '../models/toast-type.enum';
-import { CookieService } from 'ngx-cookie-service';
-import { User } from '../models/user';
-import { Response } from '../models/response';
+import { Response, ToastType, User, UserLogin } from '../models';
 
 @Injectable({
   providedIn: 'root',
@@ -20,43 +11,76 @@ import { Response } from '../models/response';
 export class AuthService {
   apiUrl: string;
   service: string = '/auth';
-  constructor(
-    private _http: HttpClient,
-    private _toastService: ToastService,
-    private _cookieService: CookieService
-  ) {
+
+  AUTHORIZATION = 'Authorization';
+  constructor(private _http: HttpClient, private _toastService: ToastService) {
     this.apiUrl = environment.api;
   }
 
-  login(user: UserLogin): Observable<any> {
+  login(user: UserLogin): Observable<User> {
     return this._http
       .post<Response>(`${this.apiUrl}${this.service}/login`, user, {
         withCredentials: true,
+        observe: 'response',
       })
       .pipe(
-        map((response: Response) => {
-          console.log(this._cookieService.getAll());
-          return response.response;
+        map((response) => {
+          this.saveAccessTokenAndUser(
+            response.headers.get(this.AUTHORIZATION),
+            response.body?.response
+          );
+          return response.body?.response;
         }),
-        switchMap((result) =>
-          this._http.post(
-            `${this.apiUrl}${this.service}/refresh`,
-            {},
-            {
-              withCredentials: true,
-            }
-          )
-        ),
         catchError((error: HttpErrorResponse) => this.handleError(error))
       );
   }
 
-  refresh(): Observable<any> {
-    return this._http.post<any>(`${this.apiUrl}${this.service}/refresh`, {});
+  refresh(): Observable<User> {
+    return this._http
+      .post<Response>(
+        `${this.apiUrl}${this.service}/refresh`,
+        {},
+        { withCredentials: true, observe: 'response' }
+      )
+      .pipe(
+        map((response) => {
+          this.saveAccessTokenAndUser(
+            response.headers.get(this.AUTHORIZATION),
+            response.body?.response
+          );
+          return response.body?.response;
+        }),
+        catchError((error) => this.handleError(error))
+      );
+  }
+
+  getAccessToken(): string | null {
+    return localStorage.getItem(this.AUTHORIZATION);
+  }
+
+  getUser(): User | null {
+    const user: string | null = localStorage.getItem('user');
+    if (user) return JSON.parse(user);
+    return null;
+  }
+
+  saveAccessTokenAndUser(token: string | null, user: User): void {
+    if (token) localStorage.setItem(this.AUTHORIZATION, token);
+    localStorage.setItem('user', JSON.stringify(user));
+  }
+
+  removeAccessToken(): void {
+    localStorage.removeItem(this.AUTHORIZATION);
+    localStorage.removeItem('user');
+  }
+
+  isAuthenticated(): boolean {
+    return localStorage.getItem(this.AUTHORIZATION) ? true : false;
   }
 
   private handleError(error: HttpErrorResponse) {
     this._toastService.show(error.error.error, ToastType.ERROR);
+    this.removeAccessToken();
     return throwError(() => error);
   }
 }

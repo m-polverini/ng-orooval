@@ -1,8 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
-import { ToastInfo } from '../../models/toast-info';
-import { ToastType } from '../../models/toast-type.enum';
-import { ToastService } from '../../services/toast.service';
+import { ToastInfo, ToastType } from '../../models';
+import { ToastService } from '../../services';
 
 @Component({
   selector: 'toast',

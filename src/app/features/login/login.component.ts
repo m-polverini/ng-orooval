@@ -1,29 +1,25 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import {
   AbstractControl,
   FormBuilder,
   FormGroup,
   Validators,
 } from '@angular/forms';
-import { CookieService } from 'ngx-cookie-service';
-import { switchMap } from 'rxjs';
-import { AuthService } from 'src/app/shared/services/auth.service';
-import { UserLogin } from '../../shared/models/user-login';
+import { Subscription } from 'rxjs';
+import { AuthService, UserLogin } from 'src/app/shared';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss'],
 })
-export class LoginComponent implements OnInit {
+export class LoginComponent implements OnInit, OnDestroy {
   loginForm: FormGroup;
   showPassword: boolean;
 
-  constructor(
-    private _fb: FormBuilder,
-    private _authService: AuthService,
-    private _cookieService: CookieService
-  ) {
+  loginSub?: Subscription;
+
+  constructor(private _fb: FormBuilder, private _authService: AuthService) {
     this.loginForm = this._fb.group({
       email: this._fb.control('prova2113433@me.it', [
         Validators.email,
@@ -34,6 +30,10 @@ export class LoginComponent implements OnInit {
     this.showPassword = false;
   }
 
+  ngOnDestroy(): void {
+    if (this.loginSub) this.loginSub.unsubscribe();
+  }
+
   ngOnInit(): void {}
 
   togglePassword() {
@@ -42,8 +42,7 @@ export class LoginComponent implements OnInit {
 
   login() {
     const user: UserLogin = this.loginForm.value;
-    this._authService.login(user).subscribe((result) => {
-      console.log(this._cookieService.getAll());
+    this.loginSub = this._authService.login(user).subscribe((result) => {
       console.log(result);
     });
   }
