@@ -6,8 +6,9 @@ import {
   Validators,
 } from '@angular/forms';
 import { Store } from '@ngrx/store';
-import { Subscription } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { login, User, UserLogin } from 'src/app/shared';
+import { isBtnEnabled, toggleBtn } from 'src/app/shared/store/ui';
 
 @Component({
   selector: 'app-login',
@@ -19,6 +20,7 @@ export class LoginComponent implements OnInit, OnDestroy {
   showPassword: boolean;
 
   loginSub?: Subscription;
+  isBtnEnabled$: Observable<boolean>;
 
   constructor(private _fb: FormBuilder, private store: Store<{ user: User }>) {
     this.loginForm = this._fb.group({
@@ -29,6 +31,7 @@ export class LoginComponent implements OnInit, OnDestroy {
       password: this._fb.control('password', [Validators.required]),
     });
     this.showPassword = false;
+    this.isBtnEnabled$ = this.store.select(isBtnEnabled);
   }
 
   ngOnDestroy(): void {
@@ -43,6 +46,7 @@ export class LoginComponent implements OnInit, OnDestroy {
 
   login() {
     const user: UserLogin = this.loginForm.value;
+    this.store.dispatch(toggleBtn({ enabled: false }));
     this.store.dispatch(login({ credentials: user }));
   }
 

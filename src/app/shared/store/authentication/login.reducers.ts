@@ -1,13 +1,17 @@
 import { createReducer, on } from '@ngrx/store';
 import { loginFailed, loginSuccess } from './login.actions';
 
-export const initialState = {};
+export const initialStateLogin = {};
 
 export const loginReducer = createReducer(
-  initialState,
+  initialStateLogin,
   on(loginSuccess, (state, action) => ({
     user: action.auth.user,
     accessToken: action.auth.accessToken,
   })),
-  on(loginFailed, (state, action) => ({ error: action.error }))
+  on(loginFailed, (state, action) => ({
+    user: undefined,
+    accessToken: undefined,
+    error: action.error,
+  }))
 );

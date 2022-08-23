@@ -14,6 +14,15 @@
         width="35px"
       />
     </a>
-    <a routerLink="login" class="text-decoration-none text-dark">Login</a>
+    <div *ngIf="user$ | async as user" class="d-flex flex-column">
+      <span class="text-end fw-bolder fs-5">{{ user.displayName }}</span>
+      <span class="text-end text-muted fs-6">{{ user.email }}</span>
+    </div>
+    <a
+      *ngIf="!(user$ | async)"
+      routerLink="login"
+      class="text-decoration-none text-dark"
+      >Login</a
+    >
   </div>
 </nav>

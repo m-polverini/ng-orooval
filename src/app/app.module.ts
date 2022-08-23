@@ -9,8 +9,8 @@ import { StoreModule } from '@ngrx/store';
 import { StoreRouterConnectingModule } from '@ngrx/router-store';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { environment } from 'src/environments/environment';
-import { effects, reducers } from './shared/store/store';
 import { EffectsModule } from '@ngrx/effects';
+import { metaReducers, effects, reducers } from './shared';
 
 @NgModule({
   declarations: [AppComponent],
@@ -19,7 +19,7 @@ import { EffectsModule } from '@ngrx/effects';
     AppRoutingModule,
     HttpClientModule,
     SharedModule,
-    StoreModule.forRoot(reducers),
+    StoreModule.forRoot(reducers, { metaReducers }),
     EffectsModule.forRoot(effects),
     StoreRouterConnectingModule.forRoot(),
     StoreDevtoolsModule.instrument({
